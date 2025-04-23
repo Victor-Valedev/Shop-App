@@ -11,7 +11,10 @@ class ProductsOverviewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Minha Loja')),
+      appBar: AppBar(
+        title: Text('Minha Loja'),
+        centerTitle: true,
+      ),
       body: GridView.builder(
         padding: EdgeInsets.all(10),
         itemCount: loadedProducts.length,
