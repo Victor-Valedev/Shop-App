@@ -9,7 +9,10 @@ class AppDrawer extends StatelessWidget {
     return Drawer(
       child: Column(
         children: [
-          AppBar(title: Text('Bem vindo usuário!')),
+          AppBar(
+            title: Text('Bem vindo usuário!'),
+            automaticallyImplyLeading: false,
+          ),
           ListTile(
             leading: Icon(Icons.shop),
             title: Text('Loja'),
