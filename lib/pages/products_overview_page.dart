@@ -46,11 +46,9 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
           ),
           Consumer<Cart>(
             child: IconButton(
-                onPressed: (){
-                  Navigator.of(context).pushNamed(
+                onPressed: () => Navigator.of(context).pushNamed(
                     AppRoutes.CART_SHOP
-                  );
-                },
+                ),
                 icon: Icon(Icons.shopping_cart)
             ),
             builder: (context, cart, child) => Badgee(
