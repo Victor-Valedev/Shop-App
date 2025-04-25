@@ -43,6 +43,24 @@ class CartPage extends StatelessWidget {
                         listen: false,
                       ).addOrder(cart);
 
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Row(
+                          children: [
+                            Text(
+                              'Compra efetuada com sucesso',
+                            ),
+                            SizedBox(width: 5),
+                            Icon(
+                              Icons.check, 
+                              color: Colors.green,
+                            )
+                          ],
+                        ),
+                        duration: Duration(seconds: 2),
+                        
+                      ),
+                    );
                       cart.clear();
                     },
                     style: TextButton.styleFrom(

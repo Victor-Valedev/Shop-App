@@ -17,27 +17,40 @@ class CartComponent extends StatelessWidget {
         padding: EdgeInsets.only(left: 20),
         color: Theme.of(context).colorScheme.error,
         alignment: Alignment.centerLeft,
-        margin: const EdgeInsets.symmetric(
-          vertical: 15,
-          horizontal: 5 
-        ),
-        child: Icon(
-          Icons.delete,
-          color: Colors.white,
-          size: 40,
-        ),
+        margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 5),
+        child: Icon(Icons.delete, color: Colors.white, size: 40),
       ),
+      confirmDismiss: (_) {
+        return showDialog<bool>(
+          context: context, 
+          builder: (ctx) => AlertDialog(
+            title: Text('Tem certeza?'),
+            content: Text('Quer remover o item do carrinho?'),
+            actions: [
+              TextButton(
+                onPressed: (){    
+                  Navigator.of(ctx).pop(false);
+                }, 
+                child: Text('Não')
+              ),
+              TextButton(
+                onPressed: (){
+                  Navigator.of(ctx).pop(true);
+                }, 
+                child: Text('Sim')
+              )
+            ],
+          )
+        );
+      },
       onDismissed: (_) {
         Provider.of<Cart>(
-          context, 
+          context,
           listen: false,
         ).removeItem(cartItem.productId);
       },
       child: Card(
-        margin: const EdgeInsets.symmetric(
-          vertical: 15,
-          horizontal: 5 
-        ),
+        margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 5),
         child: Padding(
           padding: const EdgeInsets.all(8),
           child: ListTile(
@@ -51,9 +64,7 @@ class CartComponent extends StatelessWidget {
             subtitle: Text('Total: R\$${cartItem.price * cartItem.quantify}'),
             trailing: Text(
               '${cartItem.quantify}x',
-              style: TextStyle(
-                fontSize: 16
-              ),
+              style: TextStyle(fontSize: 16),
             ),
           ),
         ),
