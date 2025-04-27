@@ -42,7 +42,6 @@ class CartPage extends StatelessWidget {
                         context,
                         listen: false,
                       ).addOrder(cart);
-
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Row(

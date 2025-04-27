@@ -44,6 +44,15 @@ class ProductList with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  void removeProduct(Product product) {
+    int index = _items.indexWhere((prod) => prod.id == product.id);
+
+    if (index >= 0) {
+      _items.removeWhere((prod) => prod.id == product.id);
+      notifyListeners();
+    }
+  }
 }
 
 
