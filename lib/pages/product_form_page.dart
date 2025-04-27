@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shopapp/models/product.dart';
 import 'package:shopapp/models/product_list.dart';
 
 class ProductFormPage extends StatefulWidget {
@@ -22,6 +23,26 @@ class _ProductFormState extends State<ProductFormPage> {
   void initState() {
     super.initState();
     _imageUrlFocus.addListener(updateImage);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (_formData.isEmpty) {
+      final arg = ModalRoute.of(context)?.settings.arguments;
+
+      if (arg != null) {
+        final product = arg as Product;
+        _formData['id'] = product.id;
+        _formData['name'] = product.name;
+        _formData['price'] = product.price;
+        _formData['description'] = product.description;
+        _formData['imageUrl'] = product.imageUrl;
+
+        _imageUrlController.text = product.imageUrl;
+      }
+    }
   }
 
   @override
@@ -54,11 +75,8 @@ class _ProductFormState extends State<ProductFormPage> {
     }
 
     _formKey.currentState?.save();
-   
-    Provider.of<ProductList>(
-      context, 
-      listen: false
-      ).addProductFromData(_formData);
+
+    Provider.of<ProductList>(context, listen: false).saveProduct(_formData);
     Navigator.of(context).pop();
   }
 
@@ -76,6 +94,7 @@ class _ProductFormState extends State<ProductFormPage> {
           child: ListView(
             children: [
               TextFormField(
+                initialValue: _formData['name']?.toString(),
                 decoration: InputDecoration(labelText: 'Nome:'),
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted:
@@ -96,6 +115,7 @@ class _ProductFormState extends State<ProductFormPage> {
                 },
               ),
               TextFormField(
+                initialValue: _formData['price']?.toString(),
                 decoration: InputDecoration(labelText: 'Preço:'),
                 textInputAction: TextInputAction.next,
                 focusNode: _priceFocus,
@@ -118,6 +138,7 @@ class _ProductFormState extends State<ProductFormPage> {
                 },
               ),
               TextFormField(
+                initialValue: _formData['description']?.toString(),
                 decoration: InputDecoration(labelText: 'Descrição:'),
                 focusNode: _descriptionFocus,
                 keyboardType: TextInputType.multiline,
@@ -167,12 +188,10 @@ class _ProductFormState extends State<ProductFormPage> {
                     ),
                   ),
                   Tooltip(
-                    message: 'Se a sua URL não conter os formatos de imagens ou correlatos, ela não irá funcionar. Se não houver, insira no final da URL.',
+                    message:
+                        'Se a sua URL não conter os formatos de imagens ou correlatos, ela não irá funcionar. Se não houver, insira no final da URL.',
                     padding: EdgeInsets.all(5),
-                    child: Icon(
-                      size: 25,
-                      Icons.help_outline,
-                    ),
+                    child: Icon(size: 25, Icons.help_outline),
                   ),
                   Container(
                     height: 100,

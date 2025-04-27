@@ -34,7 +34,7 @@ class _OrderComponentState extends State<OrderComponent> {
                   _expanded = !_expanded;
                 });
               }, 
-              icon: Icon(_expanded ? Icons.expand_more : Icons.expand_less)
+              icon: Icon(_expanded ? Icons.expand_less : Icons.expand_more)
             ),
           ),
           if(_expanded)
