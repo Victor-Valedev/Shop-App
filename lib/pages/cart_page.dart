@@ -1,3 +1,5 @@
+import 'dart:isolate';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopapp/components/cart_component.dart';
@@ -36,39 +38,7 @@ class CartPage extends StatelessWidget {
                     ),
                   ),
                   Spacer(),
-                  TextButton(
-                    onPressed: () {
-                      Provider.of<OrderList>(
-                        context,
-                        listen: false,
-                      ).addOrder(cart);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Row(
-                          children: [
-                            Text(
-                              'Compra efetuada com sucesso',
-                            ),
-                            SizedBox(width: 5),
-                            Icon(
-                              Icons.check, 
-                              color: Colors.green,
-                            )
-                          ],
-                        ),
-                        duration: Duration(seconds: 2),
-                        
-                      ),
-                    );
-                      cart.clear();
-                    },
-                    style: TextButton.styleFrom(
-                      textStyle: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                    child: Text('Comprar'),
-                  ),
+                  CartButton(cart: cart),
                 ],
               ),
             ),
@@ -81,6 +51,55 @@ class CartPage extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class CartButton extends StatefulWidget {
+  const CartButton({super.key, required this.cart});
+
+  final Cart cart;
+
+  @override
+  State<CartButton> createState() => _CartButtonState();
+}
+
+class _CartButtonState extends State<CartButton> {
+  bool _isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return _isLoading 
+    ? CircularProgressIndicator()
+    : TextButton(
+      onPressed:
+          widget.cart.itemCount == 0
+              ? null
+              : () async {
+               setState(() => _isLoading = true); 
+                await Provider.of<OrderList>(
+                  context,
+                  listen: false,
+                ).addOrder(widget.cart);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Row(
+                      children: [
+                        Text('Compra efetuada com sucesso'),
+                        SizedBox(width: 5),
+                        Icon(Icons.check, color: Colors.green),
+                      ],
+                    ),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+                widget.cart.clear();
+                setState(() => _isLoading = false);
+              },
+      style: TextButton.styleFrom(
+        textStyle: TextStyle(color: Theme.of(context).primaryColor),
+      ),
+      child: Text('COMPRAR'),
     );
   }
 }
