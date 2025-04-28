@@ -8,6 +8,13 @@ import 'package:shopapp/utils/app_routes.dart';
 class ProducstManagerPage extends StatelessWidget {
   const ProducstManagerPage({super.key});
 
+  Future<void> _refreshProducts(BuildContext context) {
+    return Provider.of<ProductList>(
+      context,
+      listen: false,
+      ).loadProducts();
+  }
+
   @override
   Widget build(BuildContext context) {
     final ProductList products = Provider.of(context);
@@ -17,27 +24,27 @@ class ProducstManagerPage extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.pushNamed(
-                context, 
-                AppRoutes.PRODUCTS_FORM
-              );
+              Navigator.pushNamed(context, AppRoutes.PRODUCTS_FORM);
             },
             icon: Icon(Icons.add),
           ),
         ],
       ),
       drawer: AppDrawer(),
-      body: Padding(
-        padding: const EdgeInsets.all(8),
-        child: ListView.builder(
-          itemCount: products.itemsCount,
-          itemBuilder:
-              (ctx, index) => Column(
-                children: [
-                  ProductItemManager(products.items[index]),
-                  Divider(color: Colors.grey),
-                ],
-              ),
+      body: RefreshIndicator(
+        onRefresh: () => _refreshProducts(context),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: ListView.builder(
+            itemCount: products.itemsCount,
+            itemBuilder:
+                (ctx, index) => Column(
+                  children: [
+                    ProductItemManager(products.items[index]),
+                    Divider(color: Colors.grey),
+                  ],
+                ),
+          ),
         ),
       ),
     );
