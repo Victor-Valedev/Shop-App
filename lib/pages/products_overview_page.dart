@@ -4,6 +4,7 @@ import 'package:shopapp/components/app_drawer.dart';
 import 'package:shopapp/components/badgee.dart';
 import 'package:shopapp/components/product_grid.dart';
 import 'package:shopapp/models/cart.dart';
+import 'package:shopapp/models/product_list.dart';
 import 'package:shopapp/utils/app_routes.dart';
 
 enum FilterOptions { favorite, all }
@@ -17,6 +18,20 @@ class ProductsOverviewPage extends StatefulWidget {
 
 class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
   bool _showFavoriteOnly = false;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<ProductList>(
+      context, 
+      listen: false
+    ).loadProducts().then((value) {
+      setState(() {
+        _isLoading = false;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,15 +40,13 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
         title: Text('Minha Loja'),
         actions: [
           PopupMenuButton(
-            itemBuilder: (_) => [
+            itemBuilder:
+                (_) => [
                   PopupMenuItem(
                     value: FilterOptions.favorite,
                     child: Text('Somente Favoritos'),
                   ),
-                  PopupMenuItem(
-                  value: FilterOptions.all, 
-                  child: Text('Todos')
-                  ),
+                  PopupMenuItem(value: FilterOptions.all, child: Text('Todos')),
                 ],
             onSelected: (FilterOptions selectedValue) {
               setState(() {
@@ -47,20 +60,20 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
           ),
           Consumer<Cart>(
             child: IconButton(
-                onPressed: () => Navigator.of(context).pushNamed(
-                    AppRoutes.CART_SHOP
-                ),
-                icon: Icon(Icons.shopping_cart)
+              onPressed:
+                  () => Navigator.of(context).pushNamed(AppRoutes.CART_SHOP),
+              icon: Icon(Icons.shopping_cart),
             ),
-            builder: (context, cart, child) => Badgee(
-              value: cart.itemCount.toString(),
-              child: child!,
-            ),
-          )
+            builder:
+                (context, cart, child) =>
+                    Badgee(value: cart.itemCount.toString(), child: child!),
+          ),
         ],
         centerTitle: true,
       ),
-      body: ProductGrid(showFavoriteOnly: _showFavoriteOnly),
+      body: _isLoading ? Center(
+        child: CircularProgressIndicator(),
+      ) : ProductGrid(showFavoriteOnly: _showFavoriteOnly),
       drawer: AppDrawer(),
     );
   }
