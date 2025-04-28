@@ -69,7 +69,7 @@ class _ProductFormState extends State<ProductFormPage> {
     return isValidUrl && endsWithFile;
   }
 
-  void _submitForm() {
+  Future<void> _submitForm() async {
     final isValid = _formKey.currentState?.validate() ?? false;
 
     if (!isValid) {
@@ -81,16 +81,32 @@ class _ProductFormState extends State<ProductFormPage> {
     setState(() {
       _isLoading = true;
     });
-
-    Provider.of<ProductList>(
+    
+    try {
+    await Provider.of<ProductList>(
       context,
       listen: false,
-    ).saveProduct(_formData).then((value) {
+    ).saveProduct(_formData);
+      Navigator.of(context).pop();
+    }catch(error){
+     await showDialog(
+        context: context, 
+        builder: (ctx) => AlertDialog(
+          title: Text('Ocorreu um erro!'),
+          content: Text('Ocorreu um erro ao salvar o produto. volte mais tarde.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Ok')
+            ),
+          ],
+        ),
+      );
+    } finally {
       setState(() {
         _isLoading = false;
       });
-      Navigator.of(context).pop();
-    });
+    }
   }
 
   @override
